@@ -1,8 +1,6 @@
-# Load necessary libraries
 library(dplyr)
 library(readr)
 
-# Load the dataset
 population_data <- read_csv("./Population_E_All_Data_NOFLAG.csv")
 
 # Filter for total population data (both sexes)
