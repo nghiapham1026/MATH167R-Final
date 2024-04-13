@@ -1,31 +1,50 @@
-# Load necessary libraries
-library(dplyr)
 library(readr)
+library(dplyr)
 library(tidyr)
+library(ggplot2)
 
 # Load the dataset
-population_data <- read_csv("./Population_E_All_Data_NOFLAG.csv")
+file_path <- './Population_E_All_Data_NOFLAG.csv'
+data <- read_csv(file_path)
 
-# Filter for global total population data (both sexes)
-global_population_data <- population_data %>%
-  filter(grepl("World", Area, ignore.case = TRUE) & Element == "Total Population - Both sexes" & Unit == "1000 No")
+# Define the countries of interest
+countries_of_interest <- c('China', 'India', 'United States of America', 'Indonesia', 'Pakistan')
 
-# Sum up the population for each year from 1950 to 2023
-global_annual_population <- global_population_data %>%
-  select(starts_with("Y")) %>%
-  summarise_all(sum) %>%
-  mutate(across(everything(), ~ .x * 1000)) # Convert from '1000s' to absolute numbers
+# Filter data for these countries and for urban population elements
+filtered_data <- data %>%
+  filter(Area %in% countries_of_interest, Element == 'Urban population')
 
-# Convert to a long format for easier manipulation
-global_annual_population_long <- pivot_longer(global_annual_population,
-                                              cols = everything(),
-                                              names_to = "Year",
-                                              values_to = "Population")
+# Pivot the data to have years as columns and countries as rows
+urban_data <- filtered_data %>%
+  pivot_longer(cols = starts_with('Y'), names_to = 'Year', values_to = 'Population') %>%
+  mutate(Year = as.numeric(sub('Y', '', Year))) # convert year to numeric
 
-# Calculate year-on-year changes
-global_annual_population_long <- global_annual_population_long %>%
-  arrange(Year) %>%
-  mutate(Yearly_Change = Population - lag(Population))
+# Prepare the dataset for regression
+predictions <- list()
 
-# Print the results
-print(global_annual_population_long)
+# Fit a linear model for each country and predict future urban population up to 2100
+urban_data %>%
+  group_by(Area) %>%
+  do({
+    model <- lm(Population ~ Year, data = .)
+    future_years <- data.frame(Year = 2051:2100)
+    future_populations <- predict(model, newdata = future_years)
+    predictions[[unique(.$Area)]] <- c(.$Population, future_populations) # Store predictions
+    future_years$Population <- future_populations
+    return(future_years)
+  }) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Area, values_from = Population)
+
+# Display the data for the last few years to see the prediction output
+print(tail(predictions, n = 5))
+
+# Optionally, plot the predictions
+plot_data <- bind_rows(lapply(names(predictions), function(country) {
+  data.frame(Year = 1950:2100, Population = predictions[[country]], Country = country)
+}))
+
+ggplot(plot_data, aes(x = Year, y = Population, color = Country)) +
+  geom_line() +
+  labs(title = "Projected Urban Populations", x = "Year", y = "Urban Population") +
+  theme_minimal()
