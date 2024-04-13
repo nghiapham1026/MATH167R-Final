@@ -1,6 +1,7 @@
 library(readr)
 library(dplyr)
 library(tidyr)
+library(purrr)  # Ensure this is added
 library(ggplot2)
 
 # Load the dataset
@@ -17,34 +18,25 @@ filtered_data <- data %>%
 # Pivot the data to have years as columns and countries as rows
 urban_data <- filtered_data %>%
   pivot_longer(cols = starts_with('Y'), names_to = 'Year', values_to = 'Population') %>%
-  mutate(Year = as.numeric(sub('Y', '', Year))) # convert year to numeric
+  mutate(Year = as.numeric(sub('Y', '', Year)))  # Convert year to numeric
 
-# Prepare the dataset for regression
-predictions <- list()
-
-# Fit a linear model for each country and predict future urban population up to 2100
-urban_data %>%
+# Prepare data for regression
+urban_data <- urban_data %>%
   group_by(Area) %>%
-  do({
-    model <- lm(Population ~ Year, data = .)
-    future_years <- data.frame(Year = 2051:2100)
-    future_populations <- predict(model, newdata = future_years)
-    predictions[[unique(.$Area)]] <- c(.$Population, future_populations) # Store predictions
-    future_years$Population <- future_populations
-    return(future_years)
-  }) %>%
-  ungroup() %>%
-  pivot_wider(names_from = Area, values_from = Population)
+  nest()
 
-# Display the data for the last few years to see the prediction output
-print(tail(predictions, n = 5))
+# Define a function to predict populations
+predict_population <- function(df) {
+  model <- lm(Population ~ Year, data = df)
+  future_years <- data.frame(Year = 2051:2100)
+  future_populations <- predict(model, newdata = future_years)
+  data.frame(Year = c(df$Year, future_years$Year),
+             Population = c(df$Population, future_populations))
+}
 
-# Optionally, plot the predictions
-plot_data <- bind_rows(lapply(names(predictions), function(country) {
-  data.frame(Year = 1950:2100, Population = predictions[[country]], Country = country)
-}))
+# Apply the function to each group and gather predictions
+predictions <- urban_data %>%
+  mutate(Predictions = map(data, ~ predict_population(.))) %>%
+  unnest(c(Predictions))
 
-ggplot(plot_data, aes(x = Year, y = Population, color = Country)) +
-  geom_line() +
-  labs(title = "Projected Urban Populations", x = "Year", y = "Urban Population") +
-  theme_minimal()
+print(tail(predictions))

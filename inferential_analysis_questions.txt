@@ -2,5 +2,5 @@ What percentage of the global population lived in urban areas versus rural areas
 Are they statistically significant?
 
 
-How has the rate of urbanization changed over decades for the top 5 most populous countries  (China, India, United States, Indonesia, Pakistan)?
+How has total urbanization changed over decades for the top 5 most populous countries (China, India, United States, Indonesia, Pakistan)?
 Predict the urbanization rates up to 2100 using Linear Regression
