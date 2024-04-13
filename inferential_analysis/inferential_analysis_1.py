@@ -2,7 +2,7 @@ import pandas as pd
 from scipy import stats
 
 # Load the dataset to examine its first few rows and structure
-file_path = './Population_E_All_Data_NOFLAG.csv'
+file_path = '../Population_E_All_Data_NOFLAG.csv'
 data = pd.read_csv(file_path, encoding='latin1')
 
 # Identify the earliest and latest years available in the data

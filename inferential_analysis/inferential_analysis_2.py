@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 # Load the dataset
-file_path = './Population_E_All_Data_NOFLAG.csv'
+file_path = '../Population_E_All_Data_NOFLAG.csv'
 data = pd.read_csv(file_path, encoding='latin1')
 
 # Define the countries of interest

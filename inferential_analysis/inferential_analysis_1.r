@@ -4,7 +4,7 @@ library(readr)
 library(tidyverse)
 
 # Load the dataset
-file_path <- './Population_E_All_Data_NOFLAG.csv'
+file_path <- '../Population_E_All_Data_NOFLAG.csv'
 data <- read_csv(file_path, locale = locale(encoding = "Latin1"))
 
 # Extract relevant columns

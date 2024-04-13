@@ -5,7 +5,7 @@ library(purrr)  # Ensure this is added
 library(ggplot2)
 
 # Load the dataset
-file_path <- './Population_E_All_Data_NOFLAG.csv'
+file_path <- '../Population_E_All_Data_NOFLAG.csv'
 data <- read_csv(file_path)
 
 # Define the countries of interest
