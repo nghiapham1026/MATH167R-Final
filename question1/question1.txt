@@ -1,0 +1,5 @@
+Global Population Growth Trends: What are the historical and projected trends in global population growth from 1950 to 2100? Analyzing the "Total Population - Both sexes" variable across all years to identify patterns, surges, or declines in global population figures. (NATHAN)
+
+Subquestion 1: How has the global "Total Population - Both sexes" (Element: Total Population - Both sexes) changed annually from 1950 to the most recent year available in the dataset?
+Subquestion 2: Which countries have experienced the fastest population growth rates between 1950 and the latest year, and what does this imply for future projections (Variables: Area, Y1950, Y[latest year])?
+Subquestion 3: How do population growth trends differ between developed and developing countries, utilizing "Area" to distinguish regions and "Total Population - Both sexes" across selected years?
