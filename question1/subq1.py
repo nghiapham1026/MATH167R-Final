@@ -21,11 +21,12 @@ global_population_years['Total Population (Millions)'] /= 1000  # converting fro
 # Plotting the global population data
 plt.figure(figsize=(12, 6))
 plt.plot(global_population_years['Year'], global_population_years['Total Population (Millions)'], marker='o', linestyle='-', color='b')
-plt.title('Global Total Population (Both Sexes) from 1950 to 2100')
+plt.title('Global Total Population (Both Sexes) from 1950 to 2024')
 plt.xlabel('Year')
 plt.ylabel('Total Population (Billions)')
 plt.grid(True)
-plt.xticks(rotation=45)
+plt.xticks(range(1950, 2025, 5))  # Adjust the x-axis to show every 5 years for clarity
+plt.xlim(1950, 2024)  # Set the x-axis limits to focus on 1950 to 2024
 plt.tight_layout()  # Adjusts plot parameters to give some padding
 
 plt.show()

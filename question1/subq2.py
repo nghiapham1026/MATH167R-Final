@@ -18,22 +18,18 @@ global_population_years.columns = ['Year', 'Total Population (Millions)']
 global_population_years['Year'] = global_population_years['Year'].str.replace('Y', '').astype(int)
 global_population_years['Total Population (Millions)'] /= 1000
 
-# Extract the latest year column available in the dataset
-latest_year_column = 'Y' + str(global_population_years['Year'].iloc[-1])
-latest_year = int(latest_year_column.strip('Y'))
-
 # Filter data for "Total Population - Both sexes" element for all countries
 country_population = data[(data['Element'] == 'Total Population - Both sexes')]
 
 # Select necessary columns
-country_population_growth = country_population[['Area', 'Y1950', latest_year_column]]
+country_population_growth = country_population[['Area', 'Y1950', 'Y2024']]
 
 # Convert population data from thousands to millions and calculate annual growth rate
 country_population_growth['Y1950'] = country_population_growth['Y1950'] / 1000
-country_population_growth[latest_year_column] = country_population_growth[latest_year_column] / 1000
-number_of_years = latest_year - 1950
+country_population_growth['Y2024'] = country_population_growth['Y2024'] / 1000
+number_of_years = 2024 - 1950
 country_population_growth['Annual Growth Rate (%)'] = (
-    (country_population_growth[latest_year_column] / country_population_growth['Y1950']) ** (1 / number_of_years) - 1) * 100
+    (country_population_growth['Y2024'] / country_population_growth['Y1950']) ** (1 / number_of_years) - 1) * 100
 
 # Sort by annual growth rate in descending order and pick the top countries
 country_population_growth_sorted = country_population_growth.sort_values(
@@ -43,6 +39,6 @@ country_population_growth_sorted = country_population_growth.sort_values(
 plt.figure(figsize=(14, 8))
 plt.barh(country_population_growth_sorted['Area'], country_population_growth_sorted['Annual Growth Rate (%)'], color='green')
 plt.xlabel('Annual Growth Rate (%)')
-plt.title('Top 10 Countries by Annualized Population Growth Rate from 1950 to 2100')
+plt.title('Top 10 Countries by Annualized Population Growth Rate from 1950 to 2024')
 plt.gca().invert_yaxis()  # Invert y-axis to have the country with highest growth at top
 plt.show()
