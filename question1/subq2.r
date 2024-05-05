@@ -38,6 +38,6 @@ top_countries <- head(country_population_growth_sorted, 20)
 # Plotting the annualized growth rates
 ggplot(top_countries, aes(x = reorder(Area, Annual_Growth_Rate), y = Annual_Growth_Rate, fill = Area)) +
   geom_bar(stat = "identity") +
-  labs(x = "Country", y = "Annual Growth Rate (%)", title = "Top 20 Countries by Annualized Population Growth Rate from 1950 to 2024") +
+  labs(x = "Country", y = "Annual Growth Rate (%)", title = "Top 20 Countries by Growth Rate from 1950 to 2024") +
   coord_flip() +  # This makes it a horizontal bar chart
   theme_minimal()
